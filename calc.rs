@@ -52,7 +52,8 @@ mod secret{
 fn read_num(read_into:&mut f64){
     let mut input_string: String = String::new();
     loop{
-        println!("Enter number X:");
+        println!("Enter number:");
+        input_string.clear();
         match io::stdin().read_line(&mut input_string){
             Ok(_n) =>{
                 match input_string.trim().parse::<f64>(){
@@ -60,16 +61,13 @@ fn read_num(read_into:&mut f64){
                         *read_into = f;
                     }
                     _=>{
-                        input_string.clear();
                         continue;        
                     }
                        
                 }
-                input_string.clear();
                 break;    
             }
             _=>{
-                input_string.clear();
                 continue;
             }   
         }
@@ -89,7 +87,7 @@ fn calc(){
     println!("Subtraction (X - Y): {}",example.subtraction());
     println!("Multiplication (X * Y): {}",example.multiplication());
     println!("Division (X / Y): {}",example.division());
-    println!("Reminder (X mod Y): {}",example.modulo()); 
+    println!("Modulo (X mod Y): {}",example.modulo()); 
 }
 
 
