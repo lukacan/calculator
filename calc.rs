@@ -1,88 +1,98 @@
 use std::io;
 
 
-
-trait ComputeFns{
+pub trait ComputeFns{
     fn addition(&self)->f64;
     fn subtraction(&self)->f64;
     fn multiplication(&self)->f64;
     fn division(&self)->f64;
-    fn reminder(&self)->f64;
+    fn modulo(&self)->f64;
 }
 
-
-struct Compute{
-    x: f64,
-    y: f64,
+mod secret{
+    use ComputeFns;
+    pub struct Compute{
+        x: f64,
+        y: f64,
+    }
+    impl Compute{
+        pub fn new(arg1:f64,arg2:f64)->Self
+        {
+            Self {x:arg1,y:arg2}
+        }
+    }
+    impl ComputeFns for Compute{
+        fn addition(&self)->f64{
+            self.x + self.y
+        }
+        fn subtraction(&self)->f64{
+            self.x - self.y
+        }
+        fn multiplication(&self)->f64{
+            self.x * self.y
+        }
+        fn division(&self)->f64{
+            if self.y == 0.0{
+                f64::NAN
+            }
+            else{
+                self.x / self.y
+            }
+        }
+        fn modulo(&self)->f64{
+            if self.y == 0.0{
+                f64::NAN
+            }
+            else{
+                self.x.rem_euclid(self.y)
+            }
+        }
+    }
 }
-
-impl ComputeFns for Compute{
-    fn addition(&self)->f64{
-        self.x + self.y
-    }
-    fn subtraction(&self)->f64{
-        self.x - self.y
-    }
-    fn multiplication(&self)->f64{
-        self.x * self.y
-    }
-    fn division(&self)->f64{
-        if self.y == 0.0{
-            f64::NAN
-        }
-        else{
-            self.x / self.y
-        }
-    }
-    fn reminder(&self)->f64{
-        if self.y == 0.0{
-            f64::NAN
-        }
-        else{
-            self.x % self.y
-        }
-    }
-
-}
-
-fn read_input(){
+fn read_num(read_into:&mut f64){
     let mut input_string: String = String::new();
-    let mut inputs: Vec<f64> = Vec::new();
-
-
     loop{
-        println!("Please type exactly two numbers (format: X Y):");
-        match io::stdin().read_line(&mut input_string) {
-            Ok(n)=>{
-                inputs=input_string.trim().split(" ")
-                .map(|x| x.parse().expect("NUT A NUMBER!")).collect();
-
-                match inputs.len(){
-                    2=>{
-                        println!("You wrote {:?}", inputs,);
-                        let example = Compute { x:inputs[0],
-                                                y:inputs[1]};
-                        println!("Addition: {}\nSubtraction: {}\nMultiplication: {}\nDivision: {}\nReminder: {}", 
-                                example.addition(),example.subtraction(),
-                                example.multiplication(),example.division(),
-                                example.reminder());
-                        
+        println!("Enter number X:");
+        match io::stdin().read_line(&mut input_string){
+            Ok(_n) =>{
+                match input_string.trim().parse::<f64>(){
+                    Ok(f)=>{
+                        *read_into = f;
                     }
                     _=>{
-                        println!("STUPID");
+                        input_string.clear();
+                        continue;        
                     }
+                       
                 }
+                input_string.clear();
+                break;    
             }
-            Err(error)=>{
-
-            }
+            _=>{
+                input_string.clear();
+                continue;
+            }   
         }
     }
-    
+}
+fn calc(){
 
+    let mut x_in: f64 = 0.0;
+    let mut y_in: f64 = 0.0;
+
+    read_num(&mut x_in);
+    read_num(&mut y_in);
+
+    let example = secret::Compute::new(x_in,y_in);
+    println!("Numbers entered X: {}, Y: {}",x_in,y_in);
+    println!("Addition (X + Y): {}",example.addition());
+    println!("Subtraction (X - Y): {}",example.subtraction());
+    println!("Multiplication (X * Y): {}",example.multiplication());
+    println!("Division (X / Y): {}",example.division());
+    println!("Reminder (X mod Y): {}",example.modulo()); 
 }
 
 
 fn main() {
-    read_input();
+    calc();
 }
